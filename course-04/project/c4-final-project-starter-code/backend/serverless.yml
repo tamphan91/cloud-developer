@@ -148,6 +148,22 @@ functions:
           - "xray:PutTelemetryRecords"
         Resource: arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*
 
+  UpdateTodoAttachment:
+    handler: src/lambda/http/updateTodoAttachment.handler
+    events:
+      - http:
+          method: put
+          path: todos/{todoId}/attachment
+          cors: true
+          authorizer: Auth
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+          - "xray:PutTraceSegments"
+          - "xray:PutTelemetryRecords"
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+
 resources:
   Resources:
     GatewayResponseDefault4XX:
